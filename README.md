@@ -1,6 +1,6 @@
 # 🏫 School CMS (Sistem Manajemen Konten Sekolah)
 > Platform web modern, cepat, dan dinamis untuk institusi pendidikan, dibangun dengan **AdonisJS 6**.
-![Dashboard Preview](https://via.placeholder.com/1200x600/0f172a/ffffff?text=School+CMS+Dashboard+Preview)
+![alt text](https://github.com/rezhazha41/Project-CMS/blob/main/Screenshot%202026-01-06%20173051.png?raw=true)
 ## 📖 Tentang Project
 Aplikasi ini adalah **Sistem Manajemen Konten (CMS)** yang dirancang khusus untuk kebutuhan website sekolah. Mengutamakan performa, keamanan, dan kemudahan penggunaan. Dilengkapi dengan fitur **Dynamic Menu Manager** ala WordPress, manajemen berita, agenda, dan data akademik.
 Dibangun dengan teknologi web modern untuk memastikan website sekolah Anda cepat, responsif di semua perangkat, dan mudah dikelola oleh admin maupun guru.
