@@ -1,0 +1,86 @@
+@component('layouts/admin', { title: 'Edit Page' })
+  <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-4">
+        <a href="{{ route('admin_pages_index') }}" class="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        </a>
+        <h1 class="text-2xl font-bold text-gray-900">Edit Page</h1>
+      </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-0 overflow-hidden">
+      <form action="{{ route('admin_pages_update', { id: page.id }) }}" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8 p-6">
+         {{ csrfField() }}
+         <input type="hidden" name="_method" value="PUT">
+         
+         <div class="lg:col-span-2 space-y-6">
+            <!-- Title -->
+            <div class="space-y-2">
+               <label class="block text-sm font-medium text-gray-700">Page Title</label>
+               <input type="text" name="title" value="{{ page.title }}" class="w-full text-xl font-bold border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+               <input type="hidden" name="slug" value="{{ page.slug }}">
+            </div>
+
+            <!-- Content -->
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Page Content</label>
+                <textarea name="content" rows="15" class="w-full border-gray-300 rounded-lg p-4 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm">{{ page.content || '' }}</textarea>
+                <p class="text-xs text-gray-500">You can use HTML tags for formatting.</p>
+            </div>
+            
+            <!-- Excerpt -->
+            <div class="space-y-2">
+                 <label class="block text-sm font-medium text-gray-700">Excerpt (Optional)</label>
+                 <textarea name="excerpt" rows="3" class="w-full border-gray-300 rounded-lg p-4 focus:ring-blue-500 focus:border-blue-500">{{ page.excerpt || '' }}</textarea>
+            </div>
+         </div>
+
+         <!-- Sidebar -->
+         <div class="space-y-6">
+            <!-- Publish Card -->
+            <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 space-y-4">
+                <h3 class="font-bold text-gray-900 border-b border-gray-200 pb-2">Publish</h3>
+                
+                 <div class="flex items-center gap-2">
+                     <input type="checkbox" name="isPublished" value="true" id="isPublished" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" {{ page.isPublished ? 'checked' : '' }}>
+                     <label for="isPublished" class="text-sm text-gray-700">Published</label>
+                 </div>
+
+                 <div class="flex rounded-lg shadow-lg shadow-blue-500/20">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-blue-700 transition-all">
+                        Update Page
+                    </button>
+                 </div>
+            </div>
+            
+            <!-- Featured Image -->
+             <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 space-y-4">
+                 <h3 class="font-bold text-gray-900 border-b border-gray-200 pb-2">Featured Image</h3>
+                 <input type="text" name="featuredImage" value="{{ page.featuredImage || '' }}" class="w-full border-gray-300 rounded-lg text-sm" placeholder="Image URL (e.g. https://...)">
+                 <p class="text-xs text-gray-500">Paste a direct link to the image.</p>
+             </div>
+             
+             <!-- Hidden Type -->
+             <input type="hidden" name="type" value="page">
+         </div>
+      </form>
+  </div>
+
+  <script>
+    const titleInput = document.querySelector('input[name="title"]');
+    const slugInput = document.querySelector('input[name="slug"]');
+    
+    titleInput.addEventListener('input', (e) => {
+        const title = e.target.value;
+        const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+        slugInput.value = slug;
+    });
+
+    tinymce.init({
+        selector: 'textarea[name="content"]',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        height: 500
+    });
+  </script>
+@end

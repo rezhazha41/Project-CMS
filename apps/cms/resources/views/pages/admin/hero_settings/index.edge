@@ -1,0 +1,210 @@
+@component('layouts/admin', { title: 'Hero Settings' })
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-8 py-6 border-b border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-900">Homepage Hero Section</h2>
+            <p class="text-sm text-gray-600 mt-1">Customize the hero section on your homepage</p>
+        </div>
+
+        @if(flashMessages.has('success'))
+            <div class="mx-8 mt-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
+                {{ flashMessages.get('success') }}
+            </div>
+        @end
+
+        <form action="{{ route('admin_hero_settings_update') }}" method="POST" class="p-8">
+            {{ csrfField() }}
+
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Hero Badge Text (Optional)</label>
+                    <input 
+                        type="text" 
+                        name="hero_badge" 
+                        value="{{ heroBadge }}" 
+                        class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" 
+                        placeholder="Pemberitahuan">
+                    <p class="text-xs text-gray-500 mt-1">Small badge text above the hero title. Leave empty to hide.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Hero Title</label>
+                    <input 
+                        type="text" 
+                        name="hero_title" 
+                        value="{{ heroTitle }}" 
+                        class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" 
+                        placeholder="e.g., Mewujudkan Generasi Unggul & Berakhlak"
+                        required>
+                </div>
+                
+                <!-- Stats Configuration -->
+                <div class="border-t border-b border-gray-100 py-6 my-6">
+                    <h3 class="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Hero Statistics</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Stat 1 -->
+                        <div>
+                             <label class="block text-xs font-medium text-gray-500 mb-1">Stat 1 Value</label>
+                             <input type="text" name="stat1_value" value="{{ stat1Value }}" class="w-full rounded-lg border-gray-300 text-sm" placeholder="1.5k+">
+                        </div>
+                        <div>
+                             <label class="block text-xs font-medium text-gray-500 mb-1">Stat 1 Label</label>
+                             <input type="text" name="stat1_label" value="{{ stat1Label }}" class="w-full rounded-lg border-gray-300 text-sm" placeholder="Siswa Aktif">
+                        </div>
+                        
+                        <!-- Stat 2 -->
+                        <div>
+                             <label class="block text-xs font-medium text-gray-500 mb-1">Stat 2 Value</label>
+                             <input type="text" name="stat2_value" value="{{ stat2Value }}" class="w-full rounded-lg border-gray-300 text-sm" placeholder="100+">
+                        </div>
+                        <div>
+                             <label class="block text-xs font-medium text-gray-500 mb-1">Stat 2 Label</label>
+                             <input type="text" name="stat2_label" value="{{ stat2Label }}" class="w-full rounded-lg border-gray-300 text-sm" placeholder="Guru Terbaik">
+                        </div>
+
+                        <!-- Stat 3 -->
+                        <div>
+                             <label class="block text-xs font-medium text-gray-500 mb-1">Stat 3 Value</label>
+                             <input type="text" name="stat3_value" value="{{ stat3Value }}" class="w-full rounded-lg border-gray-300 text-sm" placeholder="A">
+                        </div>
+                        <div>
+                             <label class="block text-xs font-medium text-gray-500 mb-1">Stat 3 Label</label>
+                             <input type="text" name="stat3_label" value="{{ stat3Label }}" class="w-full rounded-lg border-gray-300 text-sm" placeholder="Akreditasi">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Hero Description</label>
+                    <textarea 
+                        name="hero_description" 
+                        rows="3" 
+                        class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" 
+                        placeholder="e.g., SMK Al Munawwarah mempersiapkan siswa..."
+                        required>{{ heroDescription }}</textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Hero Image URL</label>
+                    
+                    <!-- Image Preview -->
+                    <div id="hero_image_preview" class="mb-3 relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 {{ heroImage ? '' : 'hidden' }}">
+                         <img src="{{ heroImage }}" alt="Hero Preview" class="w-full h-full object-cover">
+                    </div>
+
+                    <div class="flex gap-2">
+                        <input 
+                            type="text" 
+                            name="hero_image" 
+                            id="hero_image_input"
+                            value="{{ heroImage }}" 
+                            oninput="updatePreview(this.value)"
+                            class="flex-1 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" 
+                            placeholder="https://example.com/hero.jpg">
+                        <button type="button" onclick="openMediaPicker()" class="px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition text-sm whitespace-nowrap">
+                            Select Image
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-gray-500 mt-1">Upload image to Media Library and paste URL here, or use the Select Image button.</p>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
+                        Save Changes
+                    </button>
+                    <a href="{{ route('admin_settings_index') }}" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition">
+                        Back to Settings
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Media Picker Modal -->
+<div id="mediaPickerModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeMediaPicker()"></div>
+
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Select from Media Library</h3>
+            <button onclick="closeMediaPicker()" class="text-gray-400 hover:text-gray-500">
+                <span class="sr-only">Close</span>
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        
+        <div id="mediaGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 max-h-96 overflow-y-auto p-1">
+            <!-- Media items will be loaded here -->
+            <div class="col-span-full text-center py-8">
+                <svg class="animate-spin h-8 w-8 text-blue-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <p class="mt-2 text-gray-500">Loading media...</p>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function openMediaPicker() {
+        const modal = document.getElementById('mediaPickerModal');
+        modal.classList.remove('hidden');
+        loadMedia();
+    }
+
+    function closeMediaPicker() {
+        document.getElementById('mediaPickerModal').classList.add('hidden');
+    }
+
+    async function loadMedia() {
+        const grid = document.getElementById('mediaGrid');
+        
+        try {
+            const response = await fetch('{{ route("admin_media_index") }}', {
+                headers: { 'Accept': 'application/json' }
+            });
+            const media = await response.json();
+            
+            if (media.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">No media found. Upload files in Media Library first.</div>';
+                return;
+            }
+
+            grid.innerHTML = media.map(item => `
+                <div onclick="selectImage('${item.url}')" class="group cursor-pointer relative aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-transparent hover:border-blue-500 transition">
+                    <img src="${item.url}" alt="${item.originalName}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition"></div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Error loading media:', error);
+            grid.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">Failed to load media.</div>';
+        }
+    }
+
+    function selectImage(url) {
+        const fullUrl = window.location.origin + url;
+        document.getElementById('hero_image_input').value = fullUrl;
+        updatePreview(fullUrl);
+        closeMediaPicker();
+    }
+
+    function updatePreview(url) {
+        const preview = document.getElementById('hero_image_preview');
+        const img = preview.querySelector('img');
+        
+        if (url && url.trim() !== '') {
+            img.src = url;
+            preview.classList.remove('hidden');
+        } else {
+            preview.classList.add('hidden');
+        }
+    }
+</script>
+@end

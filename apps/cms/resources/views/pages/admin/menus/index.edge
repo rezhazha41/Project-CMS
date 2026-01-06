@@ -1,0 +1,270 @@
+@component('layouts/admin', { title: 'Menu Manager' })
+<div class="max-w-6xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">Menu Manager</h2>
+            <p class="text-sm text-gray-600">Manage your website navigation links.</p>
+        </div>
+    </div>
+
+    @if(flashMessages.has('success'))
+        <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
+            {{ flashMessages.get('success') }}
+        </div>
+    @end
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left: Menu Actions -->
+        <div class="lg:col-span-1 space-y-4">
+            
+            <!-- 1. Pages Accordion -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden" x-data="{ open: true }">
+                <button @click="open = !open" class="w-full flex items-center justify-between px-6 py-4 bg-gray-50 hover:bg-gray-100 transition">
+                    <h3 class="font-bold text-gray-900 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Pages
+                    </h3>
+                    <svg class="w-5 h-5 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div x-show="open" class="p-6 border-t border-gray-200">
+                    <form action="{{ route('admin_menus_add_pages') }}" method="POST">
+                        {{ csrfField() }}
+                        
+                        <div class="max-h-60 overflow-y-auto mb-4 space-y-2 border rounded-lg p-3 bg-gray-50/50 custom-scrollbar">
+                            @if(pages.length === 0)
+                                <p class="text-sm text-gray-500 text-center py-4">No pages found.</p>
+                            @else
+                                @each(page in pages)
+                                    <label class="flex items-center space-x-3 cursor-pointer p-1 hover:bg-white rounded transition">
+                                        <input type="checkbox" name="page_ids[]" value="{{ page.id }}" class="rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+                                        <span class="text-sm text-gray-700">{{ page.title }}</span>
+                                    </label>
+                                @end
+                            @end
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Add to Parent</label>
+                            <select name="parent_id" class="w-full rounded-lg border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="">No Parent (Top Level)</option>
+                                @each(option in flatMenus)
+                                    <option value="{{ option.id }}">{{ option.label }}</option>
+                                @end
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-2 rounded-lg hover:bg-gray-50 transition shadow-sm text-sm">
+                            Add to Menu
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 2. Quick Create Page -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full flex items-center justify-between px-6 py-4 bg-gray-50 hover:bg-gray-100 transition">
+                    <h3 class="font-bold text-gray-900 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Quick Create Page
+                    </h3>
+                    <svg class="w-5 h-5 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div x-show="open" class="p-6 border-t border-gray-200">
+                    <form action="{{ route('admin_menus_quick_create') }}" method="POST">
+                        {{ csrfField() }}
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
+                            <input type="text" name="title" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-sm" placeholder="e.g. New Program" required>
+                            <p class="text-xs text-gray-500 mt-1">Will create a new page and add it to menu.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Add to Parent</label>
+                            <select name="parent_id" class="w-full rounded-lg border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="">No Parent (Top Level)</option>
+                                @each(option in flatMenus)
+                                    <option value="{{ option.id }}">{{ option.label }}</option>
+                                @end
+                            </select>
+                        </div>
+
+                         <button type="submit" class="w-full bg-green-600 text-white font-bold py-2 rounded-lg hover:bg-green-700 transition shadow-sm text-sm">
+                            Create & Add
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 3. Custom Links -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full flex items-center justify-between px-6 py-4 bg-gray-50 hover:bg-gray-100 transition">
+                    <h3 class="font-bold text-gray-900 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                        Custom Links
+                    </h3>
+                    <svg class="w-5 h-5 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div x-show="open" class="p-6 border-t border-gray-200">
+                 <form action="{{ route('admin_menus_store') }}" method="POST">
+                    {{ csrfField() }}
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Label</label>
+                            <input type="text" name="label" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-sm" placeholder="e.g. Google" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">URL</label>
+                            <div class="relative">
+                                <input type="text" name="url" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-sm" placeholder="e.g. # or https://..." required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Parent Item</label>
+                            <select name="parent_id" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-sm">
+                                <option value="">No Parent (Top Level)</option>
+                                @each(option in flatMenus)
+                                    <option value="{{ option.id }}">{{ option.label }}</option>
+                                @end
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Order</label>
+                                <input type="number" name="order" value="0" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Target</label>
+                                <select name="target" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-sm">
+                                    <option value="_self">Same Tab</option>
+                                    <option value="_blank">New Tab</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-purple-600 text-white font-bold py-2.5 rounded-lg hover:bg-purple-700 transition shadow-sm text-sm">
+                            Add Link
+                        </button>
+                    </div>
+                </form>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right: Menu Structure -->
+        <div class="lg:col-span-2">
+            <div class="bg-gray-50/50 rounded-xl border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-gray-900">Menu Structure</h3>
+                    <span id="save-status" class="text-xs font-medium text-gray-500 opacity-0 transition">Saving...</span>
+                </div>
+                
+                <div id="menu-container">
+                    @if(menus.length === 0)
+                        <div class="text-center py-12 text-gray-500">
+                            <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                            <p>No menu items found. Add one from the left.</p>
+                        </div>
+                    @else
+                        <ul class="sortable-list space-y-2">
+                            @each(item in menus)
+                                @component('pages/admin/menus/item', { item: item })
+                                @end
+                            @end
+                        </ul>
+                    @end
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const nestedSortables = document.querySelectorAll('.sortable-list');
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
+        const statusEl = document.getElementById('save-status');
+
+        const initSortable = (el) => {
+            new Sortable(el, {
+                group: 'nested', // allow dragging between lists
+                animation: 150,
+                fallbackOnBody: true,
+                swapThreshold: 0.65,
+                handle: '.cursor-move', // handle selector
+                onEnd: function (evt) {
+                    saveOrder();
+                }
+            });
+        };
+
+        nestedSortables.forEach(initSortable);
+
+        function saveOrder() {
+            statusEl.textContent = 'Saving...';
+            statusEl.classList.remove('text-green-600', 'opacity-0');
+            statusEl.classList.add('text-gray-500', 'opacity-100');
+
+            const items = [];
+            // Parse hierarchy
+            const processList = (ul, parentId) => {
+                const lis = ul.querySelectorAll(':scope > li'); // direct children only
+                lis.forEach((li, index) => {
+                    const id = li.getAttribute('data-id');
+                    items.push({
+                        id: id,
+                        parent_id: parentId, // Update parent based on current container
+                        order: index + 1
+                    });
+                    
+                    // Check for nested list
+                    const nestedUl = li.querySelector('.sortable-list');
+                    if (nestedUl) {
+                        processList(nestedUl, id);
+                    }
+                });
+            };
+
+            // Start from root list(s)
+            // Note: Since we have multiple root ULs if nested, we need to find top-level UL first.
+            // But here we rely on the container structure.
+            const rootUl = document.querySelector('#menu-container > ul');
+            if (rootUl) {
+                processList(rootUl, null);
+            }
+
+            fetch("{{ route('admin_menus_reorder') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ items: items })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    statusEl.textContent = 'Saved!';
+                    statusEl.classList.remove('text-gray-500');
+                    statusEl.classList.add('text-green-600');
+                    setTimeout(() => {
+                        statusEl.classList.add('opacity-0');
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusEl.textContent = 'Error saving!';
+                statusEl.classList.add('text-red-500');
+            });
+        }
+    });
+</script>
+</div>
+@end

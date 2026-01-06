@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - {{ settings.site_title || 'SMK Al Munawwarah' }}</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  @if(settings.favicon_url)
+    <link rel="icon" type="image/x-icon" href="{{ settings.favicon_url }}">
+  @end
+  
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
+  
+  <style>
+    :root {
+      --color-primary: {{ settings.theme_color || '#059669' }};
+      --font-family: {{ settings.font_family || 'Inter' }}, system-ui, sans-serif;
+    }
+    body { font-family: var(--font-family); }
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+    .hero-pattern {
+        background-color: #047857;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23069669' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+  </style>
+</head>
+<body class="h-screen flex overflow-hidden bg-gray-50">
+
+  <!-- Left Side: Hero / Brand -->
+  <div class="hidden lg:flex w-1/2 flex-col justify-between p-12 text-white relative overflow-hidden hero-pattern">
+    <div class="absolute inset-0 bg-gradient-to-br from-primary/90 to-black/40 z-0"></div>
+    
+    @if(settings.hero_image)
+        <div class="absolute inset-0 z-0">
+            <img src="{{ settings.hero_image }}" class="w-full h-full object-cover opacity-20 mix-blend-overlay" alt="Background">
+        </div>
+    @end
+
+    <!-- Logo Area -->
+    <div class="relative z-10 flex items-center gap-3">
+        @if(settings.logo_url)
+            <img src="{{ settings.logo_url }}" alt="Logo" class="h-10 bg-white/10 p-1 rounded backdrop-blur">
+        @else
+            <div class="w-10 h-10 bg-white/20 backdrop-blur rounded-lg flex items-center justify-center font-bold text-lg">
+                SMK
+            </div>
+        @end
+        <span class="font-bold text-xl tracking-tight">{{ settings.site_title || 'SMK Al Munawwarah' }}</span>
+    </div>
+
+    <!-- Center Content -->
+     <div class="relative z-10 space-y-6 max-w-lg">
+        <h1 class="text-5xl font-extrabold leading-tight tracking-tight">
+            Selamat Datang di Portal Sekolah
+        </h1>
+        <p class="text-lg text-white/80 leading-relaxed font-light">
+            Platform digital terintegrasi untuk manajemen sekolah yang lebih efisien, transparan, dan modern.
+        </p>
+        
+        <div class="flex gap-4 pt-4">
+            <div class="flex -space-x-3">
+                <img class="w-10 h-10 rounded-full border-2 border-primary bg-gray-200" src="https://ui-avatars.com/api/?name=Teaching&background=random" alt="User">
+                <img class="w-10 h-10 rounded-full border-2 border-primary bg-gray-300" src="https://ui-avatars.com/api/?name=Staff&background=random" alt="User">
+                <img class="w-10 h-10 rounded-full border-2 border-primary bg-gray-400" src="https://ui-avatars.com/api/?name=Admin&background=random" alt="User">
+            </div>
+            <div class="flex flex-col justify-center">
+                <span class="text-sm font-bold">Bergabunglah bersama kami</span>
+                <span class="text-xs text-white/60">Akses data real-time kapan saja</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Area -->
+    <div class="relative z-10 text-sm text-white/40 font-light">
+        &copy; 2026 {{ settings.site_title }}. All rights reserved.
+    </div>
+  </div>
+
+  <!-- Right Side: Login Form -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-8 relative">
+    <div class="max-w-md w-full space-y-8 glass-effect p-10 rounded-3xl shadow-2xl border border-white/50">
+      
+      <div class="text-center space-y-2">
+        <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome Back!</h2>
+        <p class="text-sm text-gray-500">Silakan masuk untuk mengakses dashboard Anda.</p>
+      </div>
+      
+      <form class="mt-8 space-y-6" action="{{ route('auth_login_store') }}" method="POST">
+        {{ csrfField() }}
+        
+        @if(flashMessages.has('auth.errors.uid') || flashMessages.has('auth.errors.password'))
+          <div class="rounded-xl bg-red-50 p-4 border border-red-100 flex items-start gap-3 animate-pulse">
+            <svg class="h-5 w-5 text-red-500 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <div>
+                <h3 class="text-sm font-bold text-red-800">Login Gagal</h3>
+                <p class="text-xs text-red-600 mt-1">Email atau password yang Anda masukkan salah.</p>
+            </div>
+          </div>
+        @end
+
+        <div class="space-y-5">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
+                </div>
+                <input id="email" name="email" type="email" autocomplete="email" required 
+                    class="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-all shadow-sm hover:border-gray-400" 
+                    placeholder="nama@sekolah.sch.id">
+            </div>
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                     <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input id="password" name="password" type="password" autocomplete="current-password" required 
+                    class="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-all shadow-sm hover:border-gray-400" 
+                    placeholder="••••••••">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input id="remember-me" name="remember_me" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded transition cursor-pointer">
+            <label for="remember-me" class="ml-2 block text-sm text-gray-600 cursor-pointer select-none">Ingat saya</label>
+          </div>
+
+          <div class="text-sm">
+            <a href="#" class="font-medium text-primary hover:text-green-700 hover:underline transition">Lupa password?</a>
+          </div>
+        </div>
+
+        <div>
+          <button type="submit" class="group relative w-full flex justify-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-lg shadow-green-500/30 transition-all transform hover:-translate-y-0.5 hover:shadow-xl">
+            <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+              <svg class="h-5 w-5 text-green-100 group-hover:text-white transition" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+              </svg>
+            </span>
+            Masuk ke Dashboard
+          </button>
+        </div>
+        
+        <div class="mt-6 text-center">
+             <a href="/" class="text-sm text-gray-400 hover:text-gray-600 transition flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Kembali ke Beranda
+             </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

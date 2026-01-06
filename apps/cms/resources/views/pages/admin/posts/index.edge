@@ -1,0 +1,76 @@
+@component('layouts/admin', { title: 'Posts' })
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Posts</h1>
+    <a href="{{ route('admin_posts_create') }}" class="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5">
+      New Post
+    </a>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm text-gray-600">
+        <thead class="bg-gray-50 text-gray-400 font-semibold uppercase tracking-wider text-xs border-b border-gray-100">
+          <tr>
+            <th class="px-6 py-4">Title</th>
+            <th class="px-6 py-4">Author</th>
+            <th class="px-6 py-4">Category</th>
+            <th class="px-6 py-4">Date</th>
+            <th class="px-6 py-4 text-center">Status</th>
+            <th class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          @each(post in posts)
+            <tr class="hover:bg-gray-50/80 transition-colors">
+              <td class="px-6 py-4">
+                <p class="font-bold text-gray-900 mb-1">{{ post.title }}</p>
+                <span class="text-xs text-blue-500 bg-blue-50 px-2 py-0.5 rounded">{{ post.type }}</span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                   @if(post.author?.avatarUrl)
+                     <img src="{{ post.author.avatarUrl }}" class="w-6 h-6 rounded-full">
+                   @end
+                   <span>{{ post.author?.fullName || 'Unknown' }}</span>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                {{ post.category?.name || 'Uncategorized' }}
+              </td>
+              <td class="px-6 py-4 text-gray-500">
+                {{ post.createdAt.toFormat('MMM dd, yyyy') }}
+              </td>
+              <td class="px-6 py-4 text-center">
+                @if(post.isPublished)
+                  <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">Published</span>
+                @else
+                  <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold">Draft</span>
+                @end
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex justify-end gap-2">
+                  <a href="{{ route('admin_posts_edit', { id: post.id }) }}" class="text-blue-600 hover:text-blue-800 font-medium">Edit</a>
+                  <form action="{{ route('admin_posts_destroy', { id: post.id }, { qs: { _method: 'DELETE' } }) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                    {{ csrfField() }}
+                    <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          @end
+        </tbody>
+      </table>
+    </div>
+
+    @if(posts.hasPages)
+      <div class="px-6 py-4 border-t border-gray-100 flex justify-center">
+        <!-- Simple Pagination -->
+        @each(anchor in posts.getUrlsForRange(1, posts.lastPage))
+          <a href="{{ anchor.url }}" class="mx-1 px-3 py-1 rounded {{ anchor.isActive ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700' }}">
+            {{ anchor.page }}
+          </a>
+        @end
+      </div>
+    @end
+  </div>
+@end

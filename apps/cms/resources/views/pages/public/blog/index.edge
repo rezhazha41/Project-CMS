@@ -1,0 +1,80 @@
+@component('layouts/public')
+  
+  <div class="bg-gray-50 pt-32 pb-12 md:pt-40 md:pb-20 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Berita & Informasi</h1>
+      <p class="text-xl text-gray-500">Update terbaru seputar kegiatan dan prestasi SMK Al Munawwarah.</p>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <!-- Main Content (Blog Grid) -->
+      <div class="lg:col-span-8 space-y-12">
+
+        <!-- Standard Grid Posts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+           @each(post in posts)
+           <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition flex flex-col group">
+              <div class="h-48 overflow-hidden relative">
+                 <img src="{{ post.featuredImage || 'https://via.placeholder.com/800x600?text=No+Image' }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="{{ post.title }}">
+              </div>
+              <div class="p-6 flex-1 flex flex-col">
+                 <div class="flex items-center gap-3 text-xs mb-3">
+                    @if(post.category)
+                    <span class="bg-primary/10 text-primary px-2 py-1 rounded-full font-bold uppercase">{{ post.category.name }}</span>
+                    @end
+                    <span class="text-gray-400">{{ post.createdAt.toFormat('dd MMM yyyy') }}</span>
+                 </div>
+                 <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition line-clamp-2"><a href="/blog/{{ post.slug }}">{{ post.title }}</a></h3>
+                 <p class="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">{{ post.excerpt || '' }}</p>
+                 <a href="/blog/{{ post.slug }}" class="text-primary text-sm font-bold flex items-center gap-1 hover:underline mt-auto">Baca Selengkapnya <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+              </div>
+           </article>
+           @else
+            <div class="col-span-2 text-center py-10 text-gray-500">Belum ada berita.</div>
+           @end
+        </div>
+
+        <!-- Pagination -->
+        @if(posts.hasPages)
+        <div class="flex justify-center items-center gap-2 pt-8">
+           @each(anchor in posts.getUrlsForRange(1, posts.lastPage))
+             <a href="{{ anchor.url }}" class="w-10 h-10 flex items-center justify-center rounded-xl font-bold {{ anchor.isActive ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }} transition">
+               {{ anchor.page }}
+             </a>
+           @end
+        </div>
+        @end
+
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="lg:col-span-4 space-y-8">
+        <!-- Search Widget (Functional Check needed? For now styling) -->
+        <form action="/blog" method="GET" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <h3 class="font-bold text-gray-900 mb-4">Cari Berita</h3>
+          <div class="relative">
+             <input type="text" name="search" placeholder="Kata kunci..." class="w-full bg-gray-50 border-gray-200 rounded-lg pl-10 pr-4 py-3 text-sm focus:ring-primary focus:border-primary">
+             <svg class="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+        </form>
+
+        <!-- Categories Widget (Jurusan) -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <h3 class="font-bold text-gray-900 mb-4">Jurusan & Kategori</h3>
+          <ul class="space-y-3">
+            @each(cat in globalCategories)
+            <li class="flex justify-between items-center group cursor-pointer">
+              <a href="/blog?category={{ cat.id }}" class="text-gray-600 group-hover:text-primary transition flex-1">{{ cat.name }}</a>
+            </li>
+            @else
+            <li class="text-gray-500 italic text-sm">Belum ada kategori.</li>
+            @end
+          </ul>
+        </div>
+
+      </aside>
+    </div>
+  </div>
+@end

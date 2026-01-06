@@ -1,0 +1,183 @@
+@component('layouts/admin', { title: '' })
+  <div class="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Dashboard Overview</h1>
+      <p class="text-gray-500 mt-2 text-lg">Welcome back, here's what's happening with your site today.</p>
+    </div>
+    <div class="flex gap-3">
+
+       <a href="/admin/posts/create" class="px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-blue-600/30">
+         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+         New Post
+       </a>
+    </div>
+  </div>
+
+    <!-- Stats Cards (Dynamic) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+             <p class="text-sm font-medium text-gray-500 mb-1">Total Posts</p>
+             <h3 class="text-3xl font-bold text-gray-900">{{ stats.posts }}</h3>
+          </div>
+          <div class="p-3 bg-blue-50 text-blue-600 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-sm">
+           <span class="text-gray-400">All published & draft</span>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+             <p class="text-sm font-medium text-gray-500 mb-1">Total Pages</p>
+             <h3 class="text-3xl font-bold text-gray-900">{{ stats.pages }}</h3>
+          </div>
+          <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-sm">
+           <span class="text-gray-400">Static content pages</span>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+             <p class="text-sm font-medium text-gray-500 mb-1">Media Library</p>
+             <h3 class="text-3xl font-bold text-gray-900">{{ stats.media }}</h3>
+          </div>
+          <div class="p-3 bg-fuchsia-50 text-fuchsia-600 rounded-xl group-hover:bg-fuchsia-600 group-hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-sm">
+           <span class="text-gray-400">Total files uploaded</span>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+             <p class="text-sm font-medium text-gray-500 mb-1">Total Users</p>
+             <h3 class="text-3xl font-bold text-gray-900">{{ stats.users }}</h3>
+          </div>
+          <div class="p-3 bg-orange-50 text-orange-500 rounded-xl group-hover:bg-orange-500 group-hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-sm">
+           <span class="text-gray-400">Registered accounts</span>
+        </div>
+      </div>
+    </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Recent Activity Table -->
+    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="px-8 py-6 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="font-bold text-gray-900 text-lg">Recent Posts</h3>
+        <a href="/admin/posts" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition">View all</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-gray-600">
+          <thead class="bg-gray-50/50 text-gray-400 font-semibold uppercase tracking-wider text-xs border-b border-gray-100">
+            <tr>
+              <th class="px-8 py-4">Title</th>
+              <th class="px-6 py-4">Author</th>
+              <th class="px-6 py-4">Date</th>
+              <th class="px-6 py-4 text-center">Status</th>
+              <th class="px-6 py-4 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+             @each(post in recentPosts)
+             <tr class="hover:bg-gray-50/80 transition-colors">
+                <td class="px-8 py-5">
+                   <p class="font-bold text-gray-900 mb-1 truncate max-w-[200px]">{{ post.title }}</p>
+                   <span class="text-gray-400 text-xs">{{ post.category?.name || 'Uncategorized' }}</span>
+                </td>
+                <td class="px-6 py-5">
+                   <div class="flex items-center gap-3">
+                      <img src="{{ post.author?.avatarUrl || 'https://ui-avatars.com/api/?name=' + (post.author?.fullName || 'Admin') + '&background=random' }}" class="w-8 h-8 rounded-full">
+                      <span class="font-medium text-gray-700">{{ post.author?.fullName || 'Admin' }}</span>
+                   </div>
+                </td>
+                <td class="px-6 py-5 text-gray-500">{{ post.createdAt.toFormat('dd MMM yyyy') }}</td>
+                <td class="px-6 py-5 text-center">
+                   <span class="px-3 py-1 rounded-full text-xs font-bold {{ post.isPublished ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700' }}">
+                      {{ post.isPublished ? 'Published' : 'Draft' }}
+                   </span>
+                </td>
+                <td class="px-6 py-5 text-right">
+                    <form action="{{ route('admin_posts_destroy', { id: post.id }) }}?_method=DELETE" method="POST" onsubmit="return confirm('Delete this post?')">
+                      {{ csrfField() }}
+                      <button type="submit" class="text-red-500 hover:text-red-700 transition">Delete</button>
+                    </form>
+                </td>
+             </tr>
+             @else
+             <tr>
+                <td colspan="5" class="px-8 py-6 text-center text-gray-500">No posts found.</td>
+             </tr>
+             @end
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="space-y-6">
+        <!-- Quick Draft -->
+       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+            </div>
+            <h3 class="font-bold text-gray-900 text-lg">Quick Draft</h3>
+          </div>
+          <form action="{{ route('admin_dashboard_quick_draft') }}" method="POST" class="space-y-4">
+             {{ csrfField() }}
+             <input type="text" name="title" placeholder="Title" class="w-full px-4 py-3 bg-gray-50 border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium" required>
+             <textarea name="content" rows="4" placeholder="What's on your mind?" class="w-full px-4 py-3 bg-gray-50 border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium resize-none"></textarea>
+             <div class="flex justify-end">
+                <button type="submit" class="px-5 py-2.5 bg-blue-600 text-white font-bold rounded-xl text-sm transition-all shadow-sm hover:bg-blue-700">Save Draft</button>
+             </div>
+          </form>
+       </div>
+
+        <!-- Activity Log -->
+       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+           <div class="flex items-center gap-3 mb-6">
+            <div class="p-2 bg-gray-50 text-gray-600 rounded-lg">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <h3 class="font-bold text-gray-900 text-lg">Activity Log</h3>
+          </div>
+          <div class="space-y-6 relative">
+             <div class="absolute left-3.5 top-2 bottom-2 w-0.5 bg-gray-100"></div>
+             
+             @each(log in recentLogs)
+             <div class="relative flex gap-4">
+                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 z-10 ring-4 ring-white">
+                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <div>
+                   <p class="text-sm text-gray-600">
+                     <span class="font-bold text-gray-900">{{ log.user?.fullName || 'System' }}</span> 
+                     {{ log.description }}
+                   </p>
+                   <p class="text-xs text-gray-400 mt-1">{{ log.createdAt.toRelative() }}</p>
+                </div>
+             </div>
+             @else
+             <p class="text-gray-500 text-sm pl-4">No recent activity.</p>
+             @end
+          </div>
+       </div>
+    </div>
+  </div>
+@end

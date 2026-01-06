@@ -1,0 +1,46 @@
+@component('layouts/admin', { title: 'Add Activity' })
+  <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-4">
+        <a href="{{ route('admin_activities_index') }}" class="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        </a>
+        <h1 class="text-2xl font-bold text-gray-900">Add School Activity</h1>
+      </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-2xl">
+      <form action="{{ route('admin_activities_store') }}" method="POST" class="space-y-6">
+         {{ csrfField() }}
+         
+         <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+            <input type="text" name="title" class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. Upacara Bendera" required>
+         </div>
+
+         <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Description (Optional)</label>
+            <textarea name="description" rows="3" class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Brief description..."></textarea>
+         </div>
+
+         <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+            <input type="text" name="image" class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="https://example.com/image.jpg" required>
+            <p class="text-xs text-gray-500 mt-1">Paste a direct link to the activity image</p>
+         </div>
+
+         <div class="flex items-center gap-2">
+             <input type="checkbox" name="isActive" value="true" id="isActive" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked>
+             <label for="isActive" class="text-sm text-gray-700">Active (Show on homepage)</label>
+         </div>
+
+         <div class="flex gap-4">
+            <button type="submit" class="bg-blue-600 text-white font-bold py-2.5 px-6 rounded-lg hover:bg-blue-700 transition-all">
+                Add Activity
+            </button>
+            <a href="{{ route('admin_activities_index') }}" class="bg-gray-200 text-gray-700 font-bold py-2.5 px-6 rounded-lg hover:bg-gray-300 transition-all">
+                Cancel
+            </a>
+         </div>
+      </form>
+  </div>
+@end

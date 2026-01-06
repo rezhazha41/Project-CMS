@@ -1,0 +1,115 @@
+@component('layouts/admin', { title: 'Add New Post' })
+  <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-4">
+        <a href="{{ route('admin_posts_index') }}" class="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        </a>
+        <h1 class="text-2xl font-bold text-gray-900">Create New Post</h1>
+      </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-0 overflow-hidden">
+      <form action="{{ route('admin_posts_store') }}" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8 p-6">
+         {{ csrfField() }}
+         
+         <div class="lg:col-span-2 space-y-6">
+            <!-- Title -->
+            <div class="space-y-2">
+               <input type="text" name="title" placeholder="Enter post title here..." class="w-full text-4xl font-bold border-none placeholder-gray-300 focus:ring-0 px-0 py-2 text-gray-900" required>
+               <!-- Slug auto-generation logic would be JS, skipping for MVP/Manual entry if needed or just backend generation -->
+               <div class="flex items-center gap-2 text-sm text-gray-500">
+                  <span>Permalink:</span>
+                  <span class="bg-gray-50 px-2 py-1 rounded text-gray-600 font-mono">.../<span class="text-blue-600">auto-generated-slug</span></span>
+               </div>
+               <input type="hidden" name="slug" value=""> <!-- Backend can generate if empty, or JS populates -->
+               <!-- I'll add a simple JS script at bottom to auto-slug -->
+            </div>
+
+            <!-- Editor -->
+            <div class="min-h-[500px] border border-gray-200 rounded-xl relative group">
+                <textarea id="post-editor" name="content" class="w-full h-full min-h-[500px] p-4 border-none focus:ring-0 resize-y rounded-xl" placeholder="Write your story..."></textarea>
+            </div>
+            
+            <div class="space-y-2">
+                 <label class="block text-sm font-medium text-gray-700">Excerpt</label>
+                 <textarea name="excerpt" rows="3" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
+            </div>
+         </div>
+
+         <!-- Sidebar -->
+         <div class="space-y-6">
+            <!-- Publish Card -->
+            <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 space-y-4">
+                <h3 class="font-bold text-gray-900 border-b border-gray-200 pb-2">Publish</h3>
+                
+                 <div class="flex items-center gap-2">
+                     <input type="checkbox" name="isPublished" value="true" id="isPublished" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                     <label for="isPublished" class="text-sm text-gray-700">Publish immediately</label>
+                 </div>
+
+                <!-- Split Button -->
+                 <div class="flex rounded-lg shadow-lg shadow-blue-500/20">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-blue-700 transition-all">
+                        Publish
+                    </button>
+                 </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 space-y-4">
+                 <h3 class="font-bold text-gray-900 border-b border-gray-200 pb-2">Category</h3>
+                 <div class="space-y-2 max-h-40 overflow-y-auto pr-2">
+                     @each(category in categories)
+                      <div class="flex items-center gap-2">
+                          <input type="radio" name="categoryId" value="{{ category.id }}" id="cat_{{ category.id }}" class="rounded-full border-gray-300 text-blue-600 focus:ring-blue-500">
+                          <label for="cat_{{ category.id }}" class="text-sm text-gray-700">{{ category.name }}</label>
+                      </div>
+                     @else
+                      <p class="text-xs text-gray-500">No categories found.</p>
+                     @end
+                 </div>
+            </div>
+            
+            <!-- Featured Image -->
+             <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 space-y-4">
+                 <h3 class="font-bold text-gray-900 border-b border-gray-200 pb-2">Featured Image</h3>
+                 <input type="text" name="featuredImage" class="w-full border-gray-300 rounded-lg text-sm" placeholder="Image URL">
+             </div>
+             
+             <!-- Type -->
+             <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 space-y-4">
+                 <h3 class="font-bold text-gray-900 border-b border-gray-200 pb-2">Post Type</h3>
+                 <select name="type" class="w-full border-gray-300 rounded-lg text-sm bg-white">
+                    <option value="post">Post (Berita)</option>
+                    <option value="page">Page (Halaman)</option>
+                 </select>
+             </div>
+         </div>
+      </form>
+  </div>
+
+  <script>
+    // Simple slug generator
+    const titleInput = document.querySelector('input[name="title"]');
+    const slugInput = document.querySelector('input[name="slug"]');
+    
+    titleInput.addEventListener('input', (e) => {
+        const title = e.target.value;
+        const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+        slugInput.value = slug;
+    });
+
+    // TinyMCE Init
+    tinymce.init({
+      selector: '#post-editor',
+      height: 500,
+      menubar: false,
+      plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount',
+      toolbar: 'undo redo | blocks | ' +
+      'bold italic backcolor | alignleft aligncenter ' +
+      'alignright alignjustify | bullist numlist outdent indent | ' +
+      'removeformat | help',
+      content_style: 'body { font-family:Inter,sans-serif; font-size:16px }'
+    });
+  </script>
+@end

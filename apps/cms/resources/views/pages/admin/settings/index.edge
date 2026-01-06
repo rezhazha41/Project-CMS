@@ -1,0 +1,160 @@
+@component('layouts/admin', { title: 'Settings' })
+  <div class="space-y-6">
+    <div class="flex justify-between items-center">
+      <h1 class="text-3xl font-bold text-gray-900">Settings</h1>
+    </div>
+
+    @if(flashMessages.has('success'))
+      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+        {{ flashMessages.get('success') }}
+      </div>
+    @end
+
+    <form action="{{ route('admin_settings_update') }}" method="POST" class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden" x-data="{ activeTab: 'general' }">
+      {{ csrfField() }}
+      
+      <!-- Tabs Header -->
+      <div class="border-b border-gray-100 flex overflow-x-auto bg-gray-50/50">
+        <button type="button" @click="activeTab = 'general'" :class="{ 'bg-white border-b-2 border-blue-600 text-blue-600': activeTab === 'general', 'text-gray-500 hover:text-gray-700 hover:bg-gray-50': activeTab !== 'general' }" class="px-6 py-4 font-medium text-sm transition-all">General & Info</button>
+        <button type="button" @click="activeTab = 'appearance'" :class="{ 'bg-white border-b-2 border-primary text-primary': activeTab === 'appearance', 'text-gray-500 hover:text-gray-700 hover:bg-gray-50': activeTab !== 'appearance' }" class="px-6 py-4 font-medium text-sm transition-all">Appearance & Hero</button>
+        <button type="button" @click="activeTab = 'contact'" :class="{ 'bg-white border-b-2 border-green-600 text-green-600': activeTab === 'contact', 'text-gray-500 hover:text-gray-700 hover:bg-gray-50': activeTab !== 'contact' }" class="px-6 py-4 font-medium text-sm transition-all">Contact & Socials</button>
+      </div>
+
+      <div class="p-8">
+        <!-- General Tab -->
+        <div x-show="activeTab === 'general'" class="space-y-6">
+            <h3 class="text-lg font-bold text-gray-900 border-b pb-2 mb-4">Site Identity</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Site Title</label>
+                    <input type="text" name="site_title" value="{{ settings.site_title || '' }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Site Description</label>
+                    <input type="text" name="site_description" value="{{ settings.site_description || '' }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Favicon URL</label>
+                    <input type="text" name="favicon_url" value="{{ settings.favicon_url || '' }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="https://example.com/favicon.ico">
+                    <p class="text-xs text-gray-500 mt-1">Paste a direct link to your favicon image (recommended: .ico, .png, or .svg format, 32x32px or 64x64px)</p>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
+                    <input type="text" name="logo_url" value="{{ settings.logo_url || '' }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="https://example.com/logo.png">
+                    <p class="text-xs text-gray-500 mt-1">Logo will be displayed in the navbar (recommended: transparent PNG, max height 40px)</p>
+                    @if(settings.logo_url)
+                      <img src="{{ settings.logo_url }}" alt="Logo Preview" class="mt-2 h-10 object-contain border border-gray-200 rounded p-2 bg-gray-50">
+                    @end
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Appearance Tab -->
+        <div x-show="activeTab === 'appearance'" class="space-y-6" style="display: none;">
+            <h3 class="text-lg font-bold text-gray-900 border-b pb-2 mb-4">Theme Customization</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                   <label class="block text-sm font-medium text-gray-700 mb-1">Public Site Color (Main Theme)</label>
+                   <div class="flex items-center gap-3">
+                     <input type="color" name="theme_color" value="{{ settings.theme_color || '#3b82f6' }}" class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer">
+                     <span class="text-xs text-gray-500">Affects buttons, links, and accents on public pages.</span>
+                   </div>
+                </div>
+                <div>
+                   <label class="block text-sm font-medium text-gray-700 mb-1">Admin Dashboard Sidebar Color</label>
+                   <div class="flex items-center gap-3">
+                     <input type="color" name="admin_theme_color" value="{{ settings.admin_theme_color || '#1F2937' }}" class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer">
+                     <span class="text-xs text-gray-500">Affects sidebar in dashboard.</span>
+                   </div>
+                </div>
+                <div>
+                   <label class="block text-sm font-medium text-gray-700 mb-1">Admin Dashboard Navbar Color</label>
+                   <div class="flex items-center gap-3">
+                     <input type="color" name="navbar_theme_color" value="{{ settings.navbar_theme_color || '#ffffff' }}" class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer">
+                     <span class="text-xs text-gray-500">Affects top navbar in dashboard.</span>
+                   </div>
+                </div>
+                
+                <div>
+                   <label class="block text-sm font-medium text-gray-700 mb-1">Public Navbar Color</label>
+                   <div class="flex items-center gap-3">
+                     <input type="color" name="public_navbar_color" value="{{ settings.public_navbar_color || '#059669' }}" class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer">
+                     <span class="text-xs text-gray-500">Affects navbar on public pages.</span>
+                   </div>
+                </div>
+                
+                <div>
+                   <label class="block text-sm font-medium text-gray-700 mb-1">Public Footer Color</label>
+                   <div class="flex items-center gap-3">
+                     <input type="color" name="public_footer_color" value="{{ settings.public_footer_color || '#047857' }}" class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer">
+                     <span class="text-xs text-gray-500">Affects footer on public pages.</span>
+                   </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Font Family</label>
+                    <select name="font_family" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                      <option value="Inter" {{ settings.font_family === 'Inter' ? 'selected' : '' }}>Inter (Modern)</option>
+                      <option value="Roboto" {{ settings.font_family === 'Roboto' ? 'selected' : '' }}>Roboto (Geometric)</option>
+                      <option value="Open Sans" {{ settings.font_family === 'Open Sans' ? 'selected' : '' }}>Open Sans (Friendly)</option>
+                    </select>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Contact Tab -->
+        <div x-show="activeTab === 'contact'" class="space-y-6" style="display: none;">
+             <h3 class="text-lg font-bold text-gray-900 border-b pb-2 mb-4">Contact Information</h3>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" name="email" value="{{ settings.email || '' }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input type="text" name="phone" value="{{ settings.phone || '' }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    <textarea name="address" rows="2" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">{{ settings.address || '' }}</textarea>
+                </div>
+             </div>
+
+             <h3 class="text-lg font-bold text-gray-900 border-b pb-2 mb-4 pt-6">Social Media</h3>
+             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Facebook URL</label>
+                    <input type="text" name="social_facebook" value="{{ settings.social_facebook || '' }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Instagram URL</label>
+                    <input type="text" name="social_instagram" value="{{ settings.social_instagram || '' }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">YouTube URL</label>
+                    <input type="text" name="social_youtube" value="{{ settings.social_youtube || '' }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                </div>
+             </div>
+             
+             <h3 class="text-lg font-bold text-gray-900 border-b pb-2 mb-4 pt-6">Google Maps</h3>
+             <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Embed URL (src="..." from iframe)</label>
+                <textarea name="map_url" rows="3" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 font-mono text-xs" placeholder="https://www.google.com/maps/embed?...">{{ settings.map_url || '' }}</textarea>
+                <p class="text-xs text-gray-500 mt-1">Go to Google Maps -> Share -> Embed a map -> Copy HTML -> Extract the src URL.</p>
+             </div>
+        </div>
+
+      </div>
+
+      <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+        <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm transition">
+          Save Settings
+        </button>
+      </div>
+    </form>
+  </div>
+@end

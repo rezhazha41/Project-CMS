@@ -1,0 +1,53 @@
+@component('layouts/admin', { title: 'Search Results' })
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Search Results</h1>
+    <p class="text-gray-500">Showing results for "<span class="font-bold text-gray-900">{{ query }}</span>"</p>
+  </div>
+
+  <div class="space-y-8">
+     <!-- Posts Results -->
+     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+           <h2 class="font-bold text-gray-800">Posts & Pages ({{ posts.length }})</h2>
+        </div>
+        <div class="divide-y divide-gray-100">
+           @each(post in posts)
+           <div class="p-6 hover:bg-gray-50 transition flex justify-between items-center group">
+              <div>
+                 <a href="{{ route('admin_posts_edit', { id: post.id }) }}" class="block font-bold text-gray-900 group-hover:text-blue-600 transition mb-1">{{ post.title }}</a>
+                 <span class="text-xs uppercase tracking-wider font-bold text-gray-400">{{ post.type }}</span>
+                 <span class="mx-2 text-gray-300">•</span>
+                 <span class="text-xs text-gray-500">By {{ post.author?.fullName || 'Unknown' }}</span>
+              </div>
+              <a href="{{ route('admin_posts_edit', { id: post.id }) }}" class="text-sm font-medium text-gray-400 group-hover:text-blue-600">Edit</a>
+           </div>
+           @else
+           <div class="p-6 text-gray-500 italic text-sm">No posts found matching your query.</div>
+           @end
+        </div>
+     </div>
+
+     <!-- Users Results -->
+     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+           <h2 class="font-bold text-gray-800">Users ({{ users.length }})</h2>
+        </div>
+        <div class="divide-y divide-gray-100">
+           @each(user in users)
+           <div class="p-6 hover:bg-gray-50 transition flex items-center justify-between group">
+              <div class="flex items-center gap-4">
+                 <img src="{{ user.avatarUrl || 'https://ui-avatars.com/api/?name=' + user.fullName + '&background=random' }}" class="w-10 h-10 rounded-full">
+                 <div>
+                    <h3 class="font-bold text-gray-900 group-hover:text-blue-600 transition">{{ user.fullName }}</h3>
+                    <p class="text-sm text-gray-500">{{ user.email }}</p>
+                 </div>
+              </div>
+              <a href="{{ route('admin_users_edit', { id: user.id }) }}" class="text-sm font-medium text-gray-400 group-hover:text-blue-600">Edit Profile</a>
+           </div>
+           @else
+           <div class="p-6 text-gray-500 italic text-sm">No users found matching your query.</div>
+           @end
+        </div>
+     </div>
+  </div>
+@end

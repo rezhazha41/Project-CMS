@@ -1,0 +1,37 @@
+<li class="bg-white border border-gray-200 rounded-lg mb-2 overflow-hidden group sortable-item" data-id="{{ item.id }}">
+    <div class="p-3 flex items-center justify-between hover:bg-gray-50 transition">
+        <div class="flex items-center gap-3">
+             <div class="cursor-move text-gray-400 hover:text-gray-600">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+             </div>
+             <div>
+                <span class="font-bold text-gray-800">{{ item.label }}</span>
+                <span class="text-xs text-gray-500 ml-2 font-mono">{{ item.url }}</span>
+             </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Order: {{ item.order }}</span>
+            
+            <!-- Delete -->
+            <form action="{{ route('admin_menus_destroy', { id: item.id }) }}?_method=DELETE" method="POST" onsubmit="return confirm('Delete this menu item?');">
+                {{ csrfField() }}
+                <button type="submit" class="p-1 text-red-500 hover:bg-red-50 rounded">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Recursive Children -->
+    @if(item.children && item.children.length > 0)
+        <ul class="pl-8 pr-3 pb-3 border-t border-gray-100 bg-gray-50/50 sortable-list" data-parent-id="{{ item.id }}">
+            @each(child in item.children)
+                @component('pages/admin/menus/item', { item: child })
+                @end
+            @end
+        </ul>
+    @else
+        <!-- Empty list for dropping children if needed (optional, simplistic for now) -->
+        <!-- <ul class="pl-8 pr-3 pb-3 border-t border-gray-100 bg-gray-50/50 sortable-list min-h-[10px]" data-parent-id="{{ item.id }}"></ul> -->
+    @end
+</li>
